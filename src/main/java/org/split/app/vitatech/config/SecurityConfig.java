@@ -1,5 +1,6 @@
 package org.split.app.vitatech.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -10,30 +11,30 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Autowired
+    private SecurityFilter securityFilter; // Injetamos o nosso filtro aqui
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-                // Desativa a proteção CSRF, pois a nossa API será stateless (usará apenas o Token JWT)
                 .csrf(AbstractHttpConfigurer::disable)
-                // Configura a API para não guardar sessões de utilizadores em memória
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                // Define as regras de autorização das rotas
                 .authorizeHttpRequests(authorize -> authorize
-                        // Liberta totalmente o acesso para registo e login
                         .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                        // Qualquer outra rota exigirá autenticação
                         .anyRequest().authenticated()
                 )
+                // Adicionamos a instrução para o Spring rodar o NOSSO filtro ANTES do filtro padrão dele
+                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
-    // Disponibiliza o BCrypt para toda a aplicação (Requisito LGPD de proteção de dados)
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

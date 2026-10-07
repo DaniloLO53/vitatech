@@ -36,4 +36,17 @@ public class TokenService {
     private Instant generateExpirationDate() {
         return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
     }
+
+    public String validateToken(String token) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            return JWT.require(algorithm)
+                    .withIssuer("vitatech-api")
+                    .build()
+                    .verify(token)
+                    .getSubject(); // Devolve o e-mail que guardámos no token
+        } catch (Exception exception) {
+            return ""; // Se o token for inválido ou estiver expirado, devolve string vazia
+        }
+    }
 }
