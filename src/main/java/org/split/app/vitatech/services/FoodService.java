@@ -34,12 +34,12 @@ public class FoodService {
     }
 
     // 2. Pesquisar Alimentos
+    // 2. Pesquisar Alimentos
     public Page<Food> searchAvailableFoods(String name, User user, Pageable pageable) {
-        // Se a barra de pesquisa estiver vazia, retorna apenas a base geral do sistema
-        if (name == null || name.trim().isEmpty()) {
-            return foodRepository.findByCreatedByIsNull(pageable);
-        }
-        // Se pesquisou por algo, cruza a base do sistema com as receitas exclusivas deste utilizador
-        return foodRepository.searchAvailableFoodsForUser(name, user, pageable);
+        // Se o nome for nulo, converte para string vazia para a query trazer todos os itens
+        String searchTerm = (name == null) ? "" : name.trim();
+
+        // Retorna sempre a combinação: Alimentos do Sistema + Alimentos do Usuário Logado
+        return foodRepository.searchAvailableFoodsForUser(searchTerm, user, pageable);
     }
 }
