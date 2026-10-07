@@ -1,7 +1,7 @@
 -- ==========================================
 -- 0. CRIAÇÃO DE TIPOS ENUMERADOS
 -- ==========================================
-CREATE TYPE user_role AS ENUM ('PACIENTE', 'NUTRICIONISTA', 'ADMIN');
+CREATE TYPE user_role AS ENUM ('PATIENT', 'NUTRITIONIST', 'ADMIN');
 CREATE TYPE connection_status AS ENUM ('PENDENTE', 'ATIVO', 'REJEITADO', 'INATIVO');
 CREATE TYPE meal_type_enum AS ENUM ('CAFE_DA_MANHA', 'ALMOCO', 'LANCHE', 'JANTAR', 'CEIA');
 
@@ -13,7 +13,7 @@ CREATE TABLE users (
     name VARCHAR(150) NOT NULL,
     email VARCHAR(150) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
-    role user_role DEFAULT 'PACIENTE' NOT NULL,
+    role user_role DEFAULT 'PATIENT' NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
