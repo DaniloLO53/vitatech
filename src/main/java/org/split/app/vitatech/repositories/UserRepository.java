@@ -41,4 +41,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     // Exemplo de como cruzar filtros: Buscar apenas Nutricionistas que tenham um nome específico.
     @Query("SELECT u FROM User u WHERE u.role = :role AND LOWER(u.name) LIKE LOWER(CONCAT('%', :name, '%'))")
     List<User> searchUsersByRoleAndName(@Param("role") UserRole role, @Param("name") String name);
+
+    Page<User> findByRoleAndNameContainingIgnoreCase(UserRole role, String name, Pageable pageable);
 }
