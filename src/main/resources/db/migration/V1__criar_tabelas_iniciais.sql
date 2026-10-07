@@ -2,7 +2,7 @@
 -- 0. CRIAÇÃO DE TIPOS ENUMERADOS
 -- ==========================================
 CREATE TYPE user_role AS ENUM ('PATIENT', 'NUTRITIONIST', 'ADMIN');
-CREATE TYPE connection_status AS ENUM ('PENDENTE', 'ATIVO', 'REJEITADO', 'INATIVO');
+CREATE TYPE connection_status AS ENUM ('PENDING', 'ACTIVE', 'REJECTED', 'INACTIVE');
 CREATE TYPE meal_type_enum AS ENUM ('BREAKFAST', 'LUNCH', 'SNACK', 'DINNER', 'SUPPER');
 -- ==========================================
 -- 1. USUÁRIOS E AUTENTICAÇÃO (LGPD & Perfis)
@@ -27,7 +27,7 @@ COMMENT ON COLUMN users.password_hash IS 'Senha criptografada obrigatoriamente c
 CREATE TABLE patient_nutritionist (
     patient_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     nutritionist_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    status connection_status DEFAULT 'PENDENTE' NOT NULL,
+    status connection_status DEFAULT 'PENDING' NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
     PRIMARY KEY (patient_id, nutritionist_id)
 );
