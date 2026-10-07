@@ -3,8 +3,7 @@
 -- ==========================================
 CREATE TYPE user_role AS ENUM ('PATIENT', 'NUTRITIONIST', 'ADMIN');
 CREATE TYPE connection_status AS ENUM ('PENDENTE', 'ATIVO', 'REJEITADO', 'INATIVO');
-CREATE TYPE meal_type_enum AS ENUM ('CAFE_DA_MANHA', 'ALMOCO', 'LANCHE', 'JANTAR', 'CEIA');
-
+CREATE TYPE meal_type_enum AS ENUM ('BREAKFAST', 'LUNCH', 'SNACK', 'DINNER', 'SUPPER');
 -- ==========================================
 -- 1. USUÁRIOS E AUTENTICAÇÃO (LGPD & Perfis)
 -- ==========================================
