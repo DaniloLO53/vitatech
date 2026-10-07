@@ -1,5 +1,6 @@
 package org.split.app.vitatech.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,6 +20,7 @@ public class MealItem {
     private Integer id;
 
     // A qual refeição este item pertence
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "meal_id", nullable = false)
     private Meal meal;
