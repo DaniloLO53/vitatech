@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,6 +27,7 @@ public class Meal {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "meal_type", nullable = false)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private MealType mealType;
 
     @Column(name = "consumed_at", nullable = false)
