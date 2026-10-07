@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -26,4 +27,6 @@ public interface PatientNutritionistRepository extends JpaRepository<PatientNutr
     // 3. Painel do Paciente: Ver o seu Nutricionista
     // Retorna quem é o profissional que está a acompanhar o paciente atualmente (status = ACTIVE).
     Optional<PatientNutritionist> findByPatientAndStatus(User patient, ConnectionStatus status);
+
+    List<PatientNutritionist> findAllByNutritionist(User nutritionist);
 }

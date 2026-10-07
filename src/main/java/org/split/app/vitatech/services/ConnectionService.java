@@ -1,6 +1,8 @@
 package org.split.app.vitatech.services;
 
 import org.split.app.vitatech.dtos.ConnectionDTO;
+import org.split.app.vitatech.dtos.NutritionistPatientDTO;
+import org.split.app.vitatech.dtos.PatientInfoDTO;
 import org.split.app.vitatech.models.ConnectionStatus;
 import org.split.app.vitatech.models.PatientNutritionist;
 import org.split.app.vitatech.models.User;
@@ -10,6 +12,7 @@ import org.split.app.vitatech.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -89,5 +92,27 @@ public class ConnectionService {
                 connection.getStatus(),
                 connection.getCreatedAt()
         );
+    }
+
+    // Adicione este método dentro da classe ConnectionService
+    public List<NutritionistPatientDTO> getMyPatients(User nutritionist) {
+        // Valida se quem está a pedir a lista é realmente um nutricionista
+        if (nutritionist.getRole() != UserRole.NUTRITIONIST) {
+            throw new RuntimeException("Apenas nutricionistas podem aceder a esta lista.");
+        }
+
+        // Busca todas as conexões
+        List<PatientNutritionist> connections = connectionRepository.findAllByNutritionist(nutritionist);
+
+        // Converte a lista de entidades para a lista de DTOs esperada pelo React
+        return connections.stream().map(conn -> new NutritionistPatientDTO(
+                conn.getPatient().getId(), // O id principal será o ID do Paciente para o PUT funcionar
+                conn.getStatus(),
+                new PatientInfoDTO(
+                        conn.getPatient().getId(),
+                        conn.getPatient().getName(),
+                        conn.getPatient().getEmail()
+                )
+        )).toList();
     }
 }
