@@ -59,4 +59,18 @@ public class PhysicalActivityController {
     public ResponseEntity<List<ActivityLocation>> getLocations() {
         return ResponseEntity.ok(activityService.getAllLocations());
     }
+
+    // Adicione este endpoint no PhysicalActivityController:
+    @GetMapping("/patient/{patientId}")
+    public ResponseEntity<?> getPatientDailyActivities(
+            @PathVariable Integer patientId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @AuthenticationPrincipal User nutritionist) {
+        try {
+            List<UserActivity> activities = activityService.getPatientDailyActivities(nutritionist, patientId, date);
+            return ResponseEntity.ok(activities);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

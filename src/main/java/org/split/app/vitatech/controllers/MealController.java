@@ -43,4 +43,18 @@ public class MealController {
         List<Meal> meals = mealService.getDailyMeals(user, date);
         return ResponseEntity.ok(meals);
     }
+
+    // Adicione este endpoint no MealController:
+    @GetMapping("/patient/{patientId}")
+    public ResponseEntity<?> getPatientDailyMeals(
+            @PathVariable Integer patientId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @AuthenticationPrincipal User nutritionist) {
+        try {
+            List<Meal> meals = mealService.getPatientDailyMeals(nutritionist, patientId, date);
+            return ResponseEntity.ok(meals);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

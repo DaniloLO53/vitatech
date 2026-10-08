@@ -29,6 +29,35 @@ public class PhysicalActivityService {
     @Autowired
     private ActivityLocationRepository activityLocationRepository;
 
+    // Adicione as injeções abaixo no topo da classe PhysicalActivityService:
+    @Autowired
+    private org.split.app.vitatech.repositories.PatientNutritionistRepository connectionRepository;
+
+    @Autowired
+    private org.split.app.vitatech.repositories.UserRepository userRepository;
+
+    // Adicione o novo método:
+    public List<UserActivity> getPatientDailyActivities(User nutritionist, Integer patientId, LocalDate date) {
+        if (nutritionist.getRole() != org.split.app.vitatech.models.UserRole.NUTRITIONIST) {
+            throw new RuntimeException("Acesso negado: Apenas nutricionistas podem visualizar diários.");
+        }
+
+        User patient = userRepository.findById(patientId)
+                .orElseThrow(() -> new RuntimeException("Paciente não encontrado."));
+
+        boolean isConnected = connectionRepository.findByPatientAndNutritionist(patient, nutritionist)
+                .map(conn -> conn.getStatus() == org.split.app.vitatech.models.ConnectionStatus.ACTIVE)
+                .orElse(false);
+
+        if (!isConnected) {
+            throw new RuntimeException("Você não tem permissão para aceder ao diário deste paciente.");
+        }
+
+        LocalDateTime startOfDay = date.atStartOfDay();
+        LocalDateTime endOfDay = date.atTime(23, 59, 59);
+        return userActivityRepository.findByUserAndPerformedAtBetweenOrderByPerformedAtAsc(patient, startOfDay, endOfDay);
+    }
+
     // 1. Registar um novo treino realizado pelo paciente
     public UserActivity registerActivity(UserActivityRequestDTO data, User user) {
         // Verifica se a atividade existe no catálogo

@@ -26,6 +26,39 @@ public class MealService {
     @Autowired
     private FoodRepository foodRepository;
 
+    // Adicione as injeções abaixo no topo da classe MealService:
+    @Autowired
+    private org.split.app.vitatech.repositories.PatientNutritionistRepository connectionRepository;
+
+    @Autowired
+    private org.split.app.vitatech.repositories.UserRepository userRepository;
+
+    // Adicione o novo método:
+    public List<Meal> getPatientDailyMeals(User nutritionist, Integer patientId, LocalDate date) {
+        // 1. Valida se é nutricionista
+        if (nutritionist.getRole() != org.split.app.vitatech.models.UserRole.NUTRITIONIST) {
+            throw new RuntimeException("Acesso negado: Apenas nutricionistas podem visualizar diários.");
+        }
+
+        // 2. Busca o paciente
+        User patient = userRepository.findById(patientId)
+                .orElseThrow(() -> new RuntimeException("Paciente não encontrado."));
+
+        // 3. Verifica se existe um vínculo ATIVO entre eles
+        boolean isConnected = connectionRepository.findByPatientAndNutritionist(patient, nutritionist)
+                .map(conn -> conn.getStatus() == org.split.app.vitatech.models.ConnectionStatus.ACTIVE)
+                .orElse(false);
+
+        if (!isConnected) {
+            throw new RuntimeException("Você não tem permissão para aceder ao diário deste paciente.");
+        }
+
+        // 4. Se passou pela segurança, busca as refeições
+        LocalDateTime startOfDay = date.atStartOfDay();
+        LocalDateTime endOfDay = date.atTime(23, 59, 59);
+        return mealRepository.findByUserAndConsumedAtBetweenOrderByConsumedAtAsc(patient, startOfDay, endOfDay);
+    }
+
     // 1. Registar uma nova refeição e os seus itens
     @Transactional // Protege a integridade do banco de dados em caso de erro no meio do processo
     public Meal registerMeal(MealRequestDTO data, User user) {
