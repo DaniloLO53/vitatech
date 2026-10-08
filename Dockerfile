@@ -15,4 +15,4 @@ RUN ./mvnw clean package -DskipTests
 EXPOSE 8080
 
 # Comando para iniciar a aplicação (Substitua "vitatech" pelo nome gerado no seu target, geralmente é o <artifactId> do pom.xml)
-CMD ["java", "-jar", "target/vitatech-0.0.1-SNAPSHOT.jar"]
+CMD ["sh", "-c", "java -jar target/*.jar"]
