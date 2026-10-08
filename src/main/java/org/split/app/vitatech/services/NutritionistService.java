@@ -17,7 +17,6 @@ public class NutritionistService {
     public Page<NutritionistResponseDTO> searchNutritionists(String name, Pageable pageable) {
         String searchTerm = (name != null) ? name : "";
 
-        // Retorna a página de utilizadores convertida automaticamente para o formato DTO
         return userRepository.findByRoleAndNameContainingIgnoreCase(UserRole.NUTRITIONIST, searchTerm, pageable)
                 .map(user -> new NutritionistResponseDTO(user.getId(), user.getName()));
     }

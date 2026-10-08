@@ -24,7 +24,6 @@ public class ConnectionService {
     @Autowired
     private UserRepository userRepository;
 
-    // 1. Paciente envia pedido para um Nutricionista
     public ConnectionDTO requestConnection(User patient, Integer nutritionistId) {
         if (patient.getRole() != UserRole.PATIENT) {
             throw new RuntimeException("Apenas pacientes podem solicitar acompanhamento.");
@@ -37,7 +36,6 @@ public class ConnectionService {
             throw new RuntimeException("O utilizador selecionado não é um nutricionista.");
         }
 
-        // Verifica se já existe um vínculo anterior
         Optional<PatientNutritionist> existingConnection = connectionRepository.findByPatientAndNutritionist(patient, nutritionist);
         if (existingConnection.isPresent()) {
             throw new RuntimeException("Já existe um pedido ou vínculo com este nutricionista.");
@@ -46,13 +44,12 @@ public class ConnectionService {
         PatientNutritionist newConnection = new PatientNutritionist();
         newConnection.setPatient(patient);
         newConnection.setNutritionist(nutritionist);
-        newConnection.setStatus(ConnectionStatus.PENDING); // Fica pendente até o nutri aceitar
+        newConnection.setStatus(ConnectionStatus.PENDING);
 
         newConnection = connectionRepository.save(newConnection);
         return convertToDTO(newConnection);
     }
 
-    // 2. Nutricionista aceita ou rejeita o pedido
     public ConnectionDTO respondToRequest(User nutritionist, Integer patientId, ConnectionStatus newStatus) {
         if (nutritionist.getRole() != UserRole.NUTRITIONIST) {
             throw new RuntimeException("Apenas nutricionistas podem responder a pedidos.");
@@ -74,7 +71,6 @@ public class ConnectionService {
         return convertToDTO(connection);
     }
 
-    // 3. Obter o Nutricionista atual do Paciente
     public ConnectionDTO getMyNutritionist(User patient) {
         PatientNutritionist connection = connectionRepository.findByPatientAndStatus(patient, ConnectionStatus.ACTIVE)
                 .orElseThrow(() -> new RuntimeException("Você ainda não possui um nutricionista ativo."));
@@ -82,7 +78,6 @@ public class ConnectionService {
         return convertToDTO(connection);
     }
 
-    // Método auxiliar para converter a Entidade pesada num DTO leve
     private ConnectionDTO convertToDTO(PatientNutritionist connection) {
         return new ConnectionDTO(
                 connection.getPatient().getId(),
@@ -94,19 +89,15 @@ public class ConnectionService {
         );
     }
 
-    // Adicione este método dentro da classe ConnectionService
     public List<NutritionistPatientDTO> getMyPatients(User nutritionist) {
-        // Valida se quem está a pedir a lista é realmente um nutricionista
         if (nutritionist.getRole() != UserRole.NUTRITIONIST) {
             throw new RuntimeException("Apenas nutricionistas podem aceder a esta lista.");
         }
 
-        // Busca todas as conexões
         List<PatientNutritionist> connections = connectionRepository.findAllByNutritionist(nutritionist);
 
-        // Converte a lista de entidades para a lista de DTOs esperada pelo React
         return connections.stream().map(conn -> new NutritionistPatientDTO(
-                conn.getPatient().getId(), // O id principal será o ID do Paciente para o PUT funcionar
+                conn.getPatient().getId(),
                 conn.getStatus(),
                 new PatientInfoDTO(
                         conn.getPatient().getId(),

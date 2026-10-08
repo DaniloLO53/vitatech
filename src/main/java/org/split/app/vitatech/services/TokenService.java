@@ -14,7 +14,6 @@ import java.time.ZoneOffset;
 @Service
 public class TokenService {
 
-    // A chave secreta será injetada do application.properties
     @Value("${api.security.token.secret:my-default-secret-key-123}")
     private String secret;
 
@@ -32,7 +31,6 @@ public class TokenService {
         }
     }
 
-    // O token expira em 2 horas
     private Instant generateExpirationDate() {
         return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
     }
@@ -44,9 +42,9 @@ public class TokenService {
                     .withIssuer("vitatech-api")
                     .build()
                     .verify(token)
-                    .getSubject(); // Devolve o e-mail que guardámos no token
+                    .getSubject();
         } catch (Exception exception) {
-            return ""; // Se o token for inválido ou estiver expirado, devolve string vazia
+            return "";
         }
     }
 }

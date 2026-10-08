@@ -27,21 +27,18 @@ public class ChatController {
     private MessageService messageService;
 
     @Autowired
-    private UserRepository userRepository; // 1. Injetamos o repositório aqui
+    private UserRepository userRepository;
 
     @MessageMapping("/chat.send")
     public void processMessage(@Payload ChatMessageDTO chatMessage, Principal principal) {
 
-        // Salva a mensagem no banco de dados
         ChatMessageDTO savedMsg = messageService.saveMessage(principal.getName(), chatMessage);
 
-        // 2. Busca o utilizador no banco para descobrir o E-MAIL dele
         User receiver = userRepository.findById(chatMessage.receiverId())
                 .orElseThrow(() -> new RuntimeException("Destinatário não encontrado"));
 
-        // 3. Envia a mensagem para o E-MAIL do destinatário (que é como a sessão dele está registada)
         messagingTemplate.convertAndSendToUser(
-                receiver.getEmail(), // <-- CORREÇÃO AQUI
+                receiver.getEmail(),
                 "/queue/messages",
                 savedMsg
         );

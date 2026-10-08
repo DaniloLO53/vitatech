@@ -32,7 +32,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
-    private UserRole role = UserRole.PATIENT; // Valor padrão atualizado para inglês
+    private UserRole role = UserRole.PATIENT;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

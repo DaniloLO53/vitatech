@@ -38,7 +38,6 @@ public class Meal {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    // Relacionamento bi-direcional: Uma refeição tem vários itens
     @OneToMany(mappedBy = "meal", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MealItem> items;
 

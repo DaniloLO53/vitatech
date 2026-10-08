@@ -15,17 +15,10 @@ import java.util.Optional;
 @Repository
 public interface PatientNutritionistRepository extends JpaRepository<PatientNutritionist, PatientNutritionistId> {
 
-    // 1. Encontrar um vínculo específico
-    // Verifica se já existe um pedido (pendente, ativo ou rejeitado) entre um paciente e um nutricionista.
     Optional<PatientNutritionist> findByPatientAndNutritionist(User patient, User nutritionist);
 
-    // 2. Painel do Nutricionista: Listar Pacientes
-    // Permite que o nutricionista liste todos os seus pacientes "ATIVOS" ou veja os pedidos "PENDENTES".
-    // Usamos paginação para não sobrecarregar o painel se ele tiver muitos clientes.
     Page<PatientNutritionist> findByNutritionistAndStatus(User nutritionist, ConnectionStatus status, Pageable pageable);
 
-    // 3. Painel do Paciente: Ver o seu Nutricionista
-    // Retorna quem é o profissional que está a acompanhar o paciente atualmente (status = ACTIVE).
     Optional<PatientNutritionist> findByPatientAndStatus(User patient, ConnectionStatus status);
 
     List<PatientNutritionist> findAllByNutritionist(User nutritionist);

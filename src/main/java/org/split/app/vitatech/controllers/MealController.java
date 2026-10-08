@@ -20,7 +20,6 @@ public class MealController {
     @Autowired
     private MealService mealService;
 
-    // 1. Endpoint para registar uma refeição
     @PostMapping
     public ResponseEntity<?> registerMeal(
             @RequestBody MealRequestDTO data,
@@ -33,18 +32,15 @@ public class MealController {
         }
     }
 
-    // 2. Endpoint para buscar todas as refeições de um dia (Para o gráfico de calorias)
     @GetMapping("/daily")
     public ResponseEntity<List<Meal>> getDailyMeals(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @AuthenticationPrincipal User user) {
 
-        // Exemplo de uso no Postman: GET /api/meals/daily?date=2026-10-07
         List<Meal> meals = mealService.getDailyMeals(user, date);
         return ResponseEntity.ok(meals);
     }
 
-    // Adicione este endpoint no MealController:
     @GetMapping("/patient/{patientId}")
     public ResponseEntity<?> getPatientDailyMeals(
             @PathVariable Integer patientId,

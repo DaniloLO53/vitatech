@@ -21,7 +21,6 @@ public class MessageService {
     @Autowired
     private UserRepository userRepository;
 
-    // 1. Salvar e processar uma nova mensagem
     public ChatMessageDTO saveMessage(String senderEmail, ChatMessageDTO data) {
         User sender = userRepository.findByEmail(senderEmail)
                 .orElseThrow(() -> new RuntimeException("Remetente não encontrado"));
@@ -40,7 +39,6 @@ public class MessageService {
         return convertToDTO(savedMessage);
     }
 
-    // 2. Carregar o histórico da conversa entre dois utilizadores
     public List<ChatMessageDTO> getConversationHistory(User currentUser, Integer otherUserId) {
         User otherUser = userRepository.findById(otherUserId)
                 .orElseThrow(() -> new RuntimeException("Utilizador não encontrado"));
@@ -49,7 +47,6 @@ public class MessageService {
         return messages.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    // Método auxiliar para conversão
     private ChatMessageDTO convertToDTO(Message m) {
         return new ChatMessageDTO(
                 m.getId(), m.getSender().getId(), m.getReceiver().getId(),

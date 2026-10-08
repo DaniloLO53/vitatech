@@ -24,7 +24,6 @@ public class PhysicalActivityController {
     @Autowired
     private PhysicalActivityService activityService;
 
-    // 1. Endpoint para o utilizador registar um treino
     @PostMapping
     public ResponseEntity<?> registerActivity(
             @RequestBody UserActivityRequestDTO data,
@@ -37,7 +36,6 @@ public class PhysicalActivityController {
         }
     }
 
-    // 2. Endpoint para buscar o histórico de treinos do dia
     @GetMapping("/daily")
     public ResponseEntity<List<UserActivity>> getDailyActivities(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
@@ -46,7 +44,6 @@ public class PhysicalActivityController {
         return ResponseEntity.ok(activities);
     }
 
-    // 3. Endpoint para buscar no catálogo de exercícios (Ex: /catalog/search?name=corrida)
     @GetMapping("/catalog/search")
     public ResponseEntity<Page<PhysicalActivity>> searchCatalog(
             @RequestParam(required = false) String name,
@@ -54,13 +51,11 @@ public class PhysicalActivityController {
         return ResponseEntity.ok(activityService.searchCatalog(name, pageable));
     }
 
-    // 4. Endpoint para listar todos os locais de treino para os menus Dropdown
     @GetMapping("/locations")
     public ResponseEntity<List<ActivityLocation>> getLocations() {
         return ResponseEntity.ok(activityService.getAllLocations());
     }
 
-    // Adicione este endpoint no PhysicalActivityController:
     @GetMapping("/patient/{patientId}")
     public ResponseEntity<?> getPatientDailyActivities(
             @PathVariable Integer patientId,

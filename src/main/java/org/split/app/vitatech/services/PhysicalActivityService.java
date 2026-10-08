@@ -29,14 +29,12 @@ public class PhysicalActivityService {
     @Autowired
     private ActivityLocationRepository activityLocationRepository;
 
-    // Adicione as injeções abaixo no topo da classe PhysicalActivityService:
     @Autowired
     private org.split.app.vitatech.repositories.PatientNutritionistRepository connectionRepository;
 
     @Autowired
     private org.split.app.vitatech.repositories.UserRepository userRepository;
 
-    // Adicione o novo método:
     public List<UserActivity> getPatientDailyActivities(User nutritionist, Integer patientId, LocalDate date) {
         if (nutritionist.getRole() != org.split.app.vitatech.models.UserRole.NUTRITIONIST) {
             throw new RuntimeException("Acesso negado: Apenas nutricionistas podem visualizar diários.");
@@ -58,13 +56,10 @@ public class PhysicalActivityService {
         return userActivityRepository.findByUserAndPerformedAtBetweenOrderByPerformedAtAsc(patient, startOfDay, endOfDay);
     }
 
-    // 1. Registar um novo treino realizado pelo paciente
     public UserActivity registerActivity(UserActivityRequestDTO data, User user) {
-        // Verifica se a atividade existe no catálogo
         PhysicalActivity activity = physicalActivityRepository.findById(data.activityId())
                 .orElseThrow(() -> new RuntimeException("Atividade não encontrada!"));
 
-        // Verifica se o local existe
         ActivityLocation location = activityLocationRepository.findById(data.locationId())
                 .orElseThrow(() -> new RuntimeException("Local não encontrado!"));
 
@@ -78,14 +73,12 @@ public class PhysicalActivityService {
         return userActivityRepository.save(userActivity);
     }
 
-    // 2. Resgatar as atividades de um dia específico (Para o gráfico de calorias gastas)
     public List<UserActivity> getDailyActivities(User user, LocalDate date) {
         LocalDateTime startOfDay = date.atStartOfDay();
         LocalDateTime endOfDay = date.atTime(23, 59, 59);
         return userActivityRepository.findByUserAndPerformedAtBetweenOrderByPerformedAtAsc(user, startOfDay, endOfDay);
     }
 
-    // 3. Catálogo de Atividades (Paginado para não sobrecarregar o telemóvel)
     public Page<PhysicalActivity> searchCatalog(String name, Pageable pageable) {
         if (name == null || name.trim().isEmpty()) {
             return physicalActivityRepository.findAll(pageable);
@@ -93,7 +86,6 @@ public class PhysicalActivityService {
         return physicalActivityRepository.findByNameContainingIgnoreCase(name, pageable);
     }
 
-    // 4. Catálogo de Locais (Asfalto, Areia, Calçadão, etc.)
     public List<ActivityLocation> getAllLocations() {
         return activityLocationRepository.findAllByOrderByNameAsc();
     }

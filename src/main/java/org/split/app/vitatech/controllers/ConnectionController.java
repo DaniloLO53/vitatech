@@ -19,7 +19,6 @@ public class ConnectionController {
     @Autowired
     private ConnectionService connectionService;
 
-    // 1. Paciente solicita vínculo (Ex: POST /api/connections/request/2)
     @PostMapping("/request/{nutritionistId}")
     public ResponseEntity<?> requestConnection(
             @PathVariable Integer nutritionistId,
@@ -32,7 +31,6 @@ public class ConnectionController {
         }
     }
 
-    // 2. Nutricionista responde ao pedido (Ex: PUT /api/connections/respond/1?status=ACTIVE)
     @PutMapping("/respond/{patientId}")
     public ResponseEntity<?> respondToRequest(
             @PathVariable Integer patientId,
@@ -46,7 +44,6 @@ public class ConnectionController {
         }
     }
 
-    // 3. Paciente consulta quem é o seu nutricionista ativo (GET /api/connections/my-nutritionist)
     @GetMapping("/my-nutritionist")
     public ResponseEntity<?> getMyNutritionist(@AuthenticationPrincipal User patient) {
         try {
@@ -57,7 +54,6 @@ public class ConnectionController {
         }
     }
 
-    // O seu front-end faz a requisição para "/api/connections/my-patient"
     @GetMapping("/my-patient")
     public ResponseEntity<?> getMyPatients(@AuthenticationPrincipal User nutritionist) {
         try {

@@ -15,9 +15,7 @@ public class FoodService {
     @Autowired
     private FoodRepository foodRepository;
 
-    // 1. Criar Alimento Personalizado
     public Food createCustomFood(FoodRequestDTO data, User user) {
-        // Valida se o utilizador já não criou uma receita com este mesmo nome
         if (foodRepository.existsByNameIgnoreCaseAndCreatedBy(data.name(), user)) {
             throw new RuntimeException("Você já possui um alimento cadastrado com este nome!");
         }
@@ -28,18 +26,14 @@ public class FoodService {
         food.setProteinPer100g(data.proteinPer100g());
         food.setCarbsPer100g(data.carbsPer100g());
         food.setFatPer100g(data.fatPer100g());
-        food.setCreatedBy(user); // Associa o alimento apenas a este utilizador
+        food.setCreatedBy(user);
 
         return foodRepository.save(food);
     }
 
-    // 2. Pesquisar Alimentos
-    // 2. Pesquisar Alimentos
     public Page<Food> searchAvailableFoods(String name, User user, Pageable pageable) {
-        // Se o nome for nulo, converte para string vazia para a query trazer todos os itens
         String searchTerm = (name == null) ? "" : name.trim();
 
-        // Retorna sempre a combinação: Alimentos do Sistema + Alimentos do Usuário Logado
         return foodRepository.searchAvailableFoodsForUser(searchTerm, user, pageable);
     }
 }

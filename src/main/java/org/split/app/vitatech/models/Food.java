@@ -20,7 +20,6 @@ public class Food {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    // Relacionamento com o Usuário que criou a receita (pode ser nulo se for do sistema)
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "created_by_user_id")

@@ -9,8 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PhysicalActivityRepository extends JpaRepository<PhysicalActivity, Integer> {
 
-    // 1. Busca Textual Paginada
-    // Permite que o utilizador pesquise por "corrida" ou "ciclismo" na interface
-    // de forma leve e rápida (Mobile First).
     Page<PhysicalActivity> findByNameContainingIgnoreCase(String name, Pageable pageable);
 }

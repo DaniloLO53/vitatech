@@ -19,13 +19,11 @@ public class MealItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    // A qual refeição este item pertence
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "meal_id", nullable = false)
     private Meal meal;
 
-    // Qual alimento foi consumido
     @ManyToOne
     @JoinColumn(name = "food_id", nullable = false)
     private Food food;

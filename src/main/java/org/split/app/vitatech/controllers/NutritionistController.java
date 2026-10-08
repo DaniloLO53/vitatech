@@ -23,8 +23,6 @@ public class NutritionistController {
             @RequestParam(required = false, defaultValue = "") String name,
             Pageable pageable) {
 
-        // Exemplo de chamada gerada pelo front-end:
-        // GET /api/nutritionists/search?name=Ana&page=0&size=10
         Page<NutritionistResponseDTO> results = nutritionistService.searchNutritionists(name, pageable);
         return ResponseEntity.ok(results);
     }
