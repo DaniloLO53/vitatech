@@ -48,8 +48,11 @@ public class ConnectionController {
     public ResponseEntity<?> getMyNutritionist(@AuthenticationPrincipal User patient) {
         try {
             ConnectionDTO response = connectionService.getMyNutritionist(patient);
+            if (response == null) {
+                return ResponseEntity.ok().build(); // Retorna 200 OK vazio
+            }
             return ResponseEntity.ok(response);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

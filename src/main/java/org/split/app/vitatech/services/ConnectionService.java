@@ -72,8 +72,13 @@ public class ConnectionService {
     }
 
     public ConnectionDTO getMyNutritionist(User patient) {
-        PatientNutritionist connection = connectionRepository.findByPatientAndStatus(patient, ConnectionStatus.ACTIVE)
-                .orElseThrow(() -> new RuntimeException("Você ainda não possui um nutricionista ativo."));
+        List<PatientNutritionist> connections = connectionRepository.findByPatient(patient);
+
+        if (connections.isEmpty()) {
+            return null; // Não há conexão nenhuma
+        }
+
+        PatientNutritionist connection = connections.get(0);
 
         return convertToDTO(connection);
     }
