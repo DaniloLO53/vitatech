@@ -37,7 +37,9 @@ public class AuthService {
         userRepository.save(newUser);
 
         String token = tokenService.generateToken(newUser);
-        return new AuthResponseDTO(token, newUser.getName(), newUser.getRole().name());
+
+        // Passando o ID aqui (newUser.getId())
+        return new AuthResponseDTO(token, newUser.getId(), newUser.getName(), newUser.getRole().name());
     }
 
     public AuthResponseDTO login(LoginRequestDTO data) {
@@ -49,6 +51,8 @@ public class AuthService {
         }
 
         String token = tokenService.generateToken(user);
-        return new AuthResponseDTO(token, user.getName(), user.getRole().name());
+
+        // Passando o ID aqui (user.getId())
+        return new AuthResponseDTO(token, user.getId(), user.getName(), user.getRole().name());
     }
 }
